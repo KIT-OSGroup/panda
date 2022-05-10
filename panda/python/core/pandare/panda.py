@@ -488,7 +488,7 @@ class Panda():
             self.libpanda.panda_setup_signal_handling(self.__sighandler)
 
 
-    def run(self):
+    def run(self, unload_plugins=True):
         '''
         This function starts our running PANDA instance from Python. At termination this function returns and the script continues to run after it.
 
@@ -528,9 +528,10 @@ class Panda():
         self.running.set()
         self.libpanda.panda_run() # Give control to panda
         self.running.clear() # Back from panda's execution (due to shutdown or monitor quit)
-        self.delete_callbacks()
-        self.libpanda.panda_unload_plugins() # Unload c plugins - should be safe now since exec has stopped
-        self.plugins = plugin_list(self)
+        if unload_plugins:
+            self.delete_callbacks()
+            self.libpanda.panda_unload_plugins() # Unload c plugins - should be safe now since exec has stopped
+            self.plugins = plugin_list(self)
         # Write PANDALOG, if any
         #self.libpanda.panda_cleanup_record()
         if self._in_replay:
@@ -891,9 +892,6 @@ class Panda():
         buf_a = self.ffi.cast("char*", c_buf)
         length_a = self.ffi.cast("int", length)
 
-        if not hasattr(self, "_memcb"): # XXX: Why do we enable memcbs for memory writes?
-            self.enable_memcb()
-
         if physical:
             return self.libpanda.panda_physical_memory_write_external(addr, buf_a, length_a)
         else:
@@ -1103,7 +1101,6 @@ class Panda():
         Enable memory callbacks. Must be called for memory callbacks to work.
         pypanda enables this automatically with some callbacks.
         '''
-        self._memcb = True
         self.libpanda.panda_enable_memcb()
 
     def disable_memcb(self):
@@ -1111,7 +1108,6 @@ class Panda():
         Disable memory callbacks. Must be enabled for memory callbacks to work.
         pypanda enables this automatically with some callbacks.
         '''
-        self._memcb = False
         self.libpanda.panda_disable_memcb()
 
     def virt_to_phys(self, cpu, addr):
@@ -2767,6 +2763,14 @@ class Panda():
 
         if forever:
             del self.registered_callbacks[name]
+
+    def disable_all_callbacks(self):
+        '''
+        Disable all Python callbacks that have been enabled
+        '''
+        for name in self.registered_callbacks.keys():
+            # TODO exclude ones with `name.startswith("__")`? see enable_internal_callbacks
+            self.disable_callback(name)
 
     def delete_callback(self, name):
         '''
