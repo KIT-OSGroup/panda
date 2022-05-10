@@ -73,7 +73,7 @@ MAKE_CALLBACK(bool, INSN_TRANSLATE, insn_translate,
                     CPUState*, env, target_ptr_t, pc);
 
 MAKE_CALLBACK(bool, AFTER_INSN_TRANSLATE, after_insn_translate,
-                    CPUState*, env, target_ptr_t, pc)
+                    CPUState*, env, target_ptr_t, pc, target_ptr_t, previous_pc)
 
 MAKE_CALLBACK(void, START_BLOCK_EXEC, start_block_exec,
                     CPUState*, env, TranslationBlock*, tb)
@@ -221,8 +221,8 @@ int panda_cb_trampoline_insn_exec(void* context, CPUState *env, target_ptr_t pc)
     return (*(panda_cb*)context).insn_exec(env, pc);
 }
     
-int panda_cb_trampoline_after_insn_exec(void* context, CPUState *env, target_ptr_t pc) {
-    return (*(panda_cb*)context).after_insn_exec(env, pc);
+int panda_cb_trampoline_after_insn_exec(void* context, CPUState *env, target_ptr_t pc, target_ptr_t previous_pc) {
+    return (*(panda_cb*)context).after_insn_exec(env, pc, previous_pc);
 }
 
 // this callback allows us to swallow exceptions

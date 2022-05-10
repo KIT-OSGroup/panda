@@ -17,7 +17,7 @@ void panda_cb_trampoline_phys_mem_before_write(void* context, CPUState *env, tar
 void panda_cb_trampoline_phys_mem_after_write(void* context, CPUState *env, target_ptr_t pc, target_ptr_t addr, size_t size, uint8_t *buf);
 
 int panda_cb_trampoline_insn_exec(void* context, CPUState *env, target_ptr_t pc);
-int panda_cb_trampoline_after_insn_exec(void* context, CPUState *env, target_ptr_t pc);
+int panda_cb_trampoline_after_insn_exec(void* context, CPUState *env, target_ptr_t pc, target_ptr_t previous_pc);
 int panda_cb_trampoline_monitor(void* context, Monitor *mon, const char *cmd);
 //int panda_cb_trampoline_before_loadvm(void* context);
 void panda_cb_trampoline_replay_hd_transfer(void* context, CPUState *env, uint32_t type, target_ptr_t src_addr, target_ptr_t dest_addr, size_t num_bytes);
@@ -66,7 +66,7 @@ void panda_cb_trampoline_replay_serial_write(void* context, CPUState *env, targe
 
 /* invoked from panda/target/ARCH/translate.c */
 bool panda_cb_trampoline_insn_translate(void* context, CPUState *env, target_ptr_t pc);
-bool panda_cb_trampoline_after_insn_translate(void* context, CPUState *env, target_ptr_t pc);
+bool panda_cb_trampoline_after_insn_translate(void* context, CPUState *env, target_ptr_t pc, target_ptr_t previous_pc);
 
 /* invoked from target/i386/helper.c */
 bool panda_cb_trampoline_asid_changed(void* context, CPUState *env, target_ptr_t oldval, target_ptr_t newval);

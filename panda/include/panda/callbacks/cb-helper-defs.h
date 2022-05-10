@@ -12,7 +12,7 @@
  * 
 PANDAENDCOMMENT */
 DEF_HELPER_1(panda_insn_exec, void, tl)
-DEF_HELPER_1(panda_after_insn_exec, void, tl)
+DEF_HELPER_2(panda_after_insn_exec, void, tl, tl)
 
 #if defined(TARGET_ARM)
 DEF_HELPER_1(panda_guest_hypercall, void, env)

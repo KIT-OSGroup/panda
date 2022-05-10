@@ -307,7 +307,7 @@ typedef union panda_cb {
        Notes:
         See `insn_translate`, callbacks are registered via PANDA_CB_AFTER_INSN_EXEC
     */
-    bool (*after_insn_translate)(CPUState *env, target_ptr_t pc);
+    bool (*after_insn_translate)(CPUState *env, target_ptr_t pc, target_ptr_t previous_pc);
 
     /* Callback ID: PANDA_CB_AFTER_INSN_EXEC
 
@@ -327,7 +327,7 @@ typedef union panda_cb {
        Notes:
         See `insn_exec`. Enabled via the PANDA_CB_AFTER_INSN_TRANSLATE callback.
     */
-    int (*after_insn_exec)(CPUState *env, target_ptr_t pc);
+    int (*after_insn_exec)(CPUState *env, target_ptr_t pc, target_ptr_t previous_pc);
 
     /* Callback ID: PANDA_CB_VIRT_MEM_BEFORE_READ
 
@@ -1259,7 +1259,7 @@ typedef union panda_cb_with_context {
        Notes:
         See `insn_translate`, callbacks are registered via PANDA_CB_AFTER_INSN_EXEC
     */
-    bool (*after_insn_translate)(void* context, CPUState *env, target_ptr_t pc);
+    bool (*after_insn_translate)(void* context, CPUState *env, target_ptr_t pc, target_ptr_t previous_pc);
 
     /* Callback ID: PANDA_CB_AFTER_INSN_EXEC
 
@@ -1279,7 +1279,7 @@ typedef union panda_cb_with_context {
        Notes:
         See `insn_exec`. Enabled via the PANDA_CB_AFTER_INSN_TRANSLATE callback.
     */
-    int (*after_insn_exec)(void* context, CPUState *env, target_ptr_t pc);
+    int (*after_insn_exec)(void* context, CPUState *env, target_ptr_t pc, target_ptr_t previous_pc);
 
     /* Callback ID: PANDA_CB_VIRT_MEM_BEFORE_READ
 

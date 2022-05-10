@@ -8548,12 +8548,13 @@ generate_debug:
             gen_helper_panda_insn_exec(tcg_const_tl(pc_ptr));
         }
 
+        target_ulong old_pc_ptr = pc_ptr;
         pc_ptr = disas_insn(env, dc, pc_ptr);
         rr_updated_instr_count++;
 
-        if (unlikely(panda_callbacks_after_insn_translate(ENV_GET_CPU(env), pc_ptr))
+        if (unlikely(panda_callbacks_after_insn_translate(ENV_GET_CPU(env), pc_ptr, old_pc_ptr))
                 && !dc->is_jmp) {
-            gen_helper_panda_after_insn_exec(tcg_const_tl(pc_ptr));
+            gen_helper_panda_after_insn_exec(tcg_const_tl(pc_ptr), tcg_const_tl(old_pc_ptr));
         }
 
         /* stop translation if indicated */
